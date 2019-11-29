@@ -1,0 +1,71 @@
+{
+  "server": {
+    "path": "",
+    "hostname": "",
+    "port": 33333,
+    "protocol": "admin",
+    "netkey": ""
+  },
+  "config": {
+    "adminServerChan": "",
+    "connectHash": "e5d6190e1bfe36ecff7c03d34d99ecd7",
+    "welcome": "已连接到服务器",
+    "raffle": false,
+    "lottery": false,
+    "pklottery": false,
+    "beatStorm": false
+  },
+  "user": {},
+  "newUserData": {
+    "status": false,
+    "nickname": "育碧土豆",
+    "serverURL": ""
+  },
+  "info": {
+    "adminServerChan": {
+      "description": "SCKEY",
+      "tip": "Server酱对应的KEY",
+      "type": "string"
+    },
+    "connectHash": {
+      "description": "连接子协议",
+      "tip": "与转发服务器连接的protocol",
+      "type": "string"
+    },
+    "raffle": {
+      "description": "raffle类抽奖",
+      "tip": "是否发送raffle类抽奖消息, 例如活动抽奖",
+      "type": "boolean"
+    },
+    "lottery": {
+      "description": "lottery类抽奖",
+      "tip": "是否发送lottery类抽奖消息, 例如舰队抽奖",
+      "type": "boolean"
+    },
+    "pklottery": {
+      "description": "pklottery类抽奖",
+      "tip": "是否发送pklottery类抽奖消息, 如大乱斗抽奖",
+      "type": "boolean"
+    },
+    "beatStorm": {
+      "description": "节奏风暴抽奖",
+      "tip": "是否发送节奏风暴抽奖消息",
+      "type": "boolean"
+    },
+    "status": {
+      "description": "开关",
+      "tip": "用户组设置的总开关, 关闭时该用户组无法连接",
+      "type": "boolean"
+    },
+    "nickname": {
+      "description": "名称",
+      "tip": "WebSocket服务器的名称，只用于区分，无太大意义",
+      "type": "string"
+    },
+    "serverURL": {
+      "description": "URL",
+      "tip": "WebSocket服务器的URL",
+      "type": "string"
+    }
+  }
+}

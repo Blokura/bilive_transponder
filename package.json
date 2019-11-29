@@ -1,0 +1,32 @@
+{
+  "name": "bilive_transponder",
+  "version": "0.0.1",
+  "description": "bilibili直播-多ws转发程序",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:tsc && npm-run-posix-or-windows build:copy",
+    "build:tsc": "tsc -p tsconfig.json || exit 0",
+    "build:copy": "cp src/options.default.json build/",
+    "build:copy:windows": "copy src\\options.default.json build\\ /Y",
+    "clean": "rimraf build",
+    "start": "node build/app.js"
+  },
+  "author": "Vector000",
+  "devDependencies": {
+    "@types/request": "^2.48.2",
+    "@types/ws": "^6.0.1",
+    "cz-conventional-changelog": "^2.1.0",
+    "npm-run-posix-or-windows": "^2.0.2",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "ws": "^6.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
