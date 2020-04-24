@@ -12,7 +12,7 @@ const { B64XorCipher } = tools
  */
 class WSServer {
   private _wsServer!: ws.Server
-  private _userClient!: ws
+  private _clients: Map<string, Set<ws>> = new Map()
   private _adminClient!: ws
   //@ts-ignore
   private _loop: NodeJS.Timer
@@ -71,6 +71,8 @@ class WSServer {
       verifyClient: (info: { origin: string, req: http.IncomingMessage, secure: boolean }) => {
         const protocol = <string | undefined>info.req.headers['sec-websocket-protocol']
         if (protocol === undefined) return false
+        const userag = <string | undefined>info.req.headers['user-agent']
+        if (userag == '' || userag == undefined || userag == 'undefined') return false
         const adminProtocol = Options._.server.protocol
         const userProtocol = Options._.config.connectHash
         if (protocol === adminProtocol || protocol === userProtocol) return true
@@ -143,6 +145,15 @@ class WSServer {
    */
   private _WsConnectionHandler(client: ws, remoteAddress: string) {
     const protocol = client.protocol
+    // 分protocol存储
+    if (this._clients.has(protocol)) {
+      const clients = <Set<ws>>this._clients.get(protocol)
+      clients.add(client)
+    }
+    else {
+      const clients = new Set([client])
+      this._clients.set(protocol, clients)
+    }
     let timeout: NodeJS.Timer
     const setTimeoutError = () => {
       timeout = setTimeout(() => {
@@ -156,13 +167,15 @@ class WSServer {
       })
       .on('close', (code, reason) => {
         this._destroyClient(client)
+        const clients = <Set<ws>>this._clients.get(protocol)
+        clients.delete(client)
+        if (clients.size === 0) this._clients.delete(protocol)
         tools.Log(`用户: ${protocol} 地址: ${remoteAddress} 已断开`, code, reason)
       })
       .on('pong', () => {
         clearTimeout(timeout)
         setTimeoutError()
       })
-    this._userClient = client
     setTimeoutError()
   }
   /**
@@ -241,6 +254,16 @@ class WSServer {
     this._Broadcast(lotteryMessage, 'pklottery', protocol)
   }
   /**
+   * 天选时刻抽奖
+   *
+   * @param {anchorMessage} anchorMessage
+   * @param {string} [protocol]
+   * @memberof WSServer
+   */
+  public Anchor(anchorMessage: message, protocol?: string) {
+    this._Broadcast(anchorMessage, 'anchor', protocol)
+  }
+  /**
    * 广播消息
    *
    * @private
@@ -250,11 +273,14 @@ class WSServer {
    * @memberof WSServer
    */
   private _Broadcast(message: message, key: string, protocol?: string) {
-    if (protocol !== undefined) return
-    if (key === 'sysmsg' || Options._.config[key]) {
-      if (this._userClient !== undefined && this._userClient.readyState === ws.OPEN)
-        this._userClient.send(JSON.stringify(message), error => { if (error !== undefined) tools.Log(error) })
-    }
+    this._clients.forEach((clients, userprotocol) => {
+      if (protocol !== undefined && protocol !== userprotocol) return
+      if (key === 'sysmsg' || Options._.config[key]) {
+        clients.forEach(client => {
+          if (client.readyState === ws.OPEN) client.send(JSON.stringify(message), error => { if (error !== undefined) tools.Log(error) })
+        })
+      }
+    })
   }
   /**
    * 监听客户端发来的消息, CMD为关键字

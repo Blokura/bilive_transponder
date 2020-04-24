@@ -29,6 +29,7 @@ interface config {
   lottery: boolean
   pklottery: boolean
   beatStorm: boolean
+  anchor: boolean
 }
 interface userCollection {
   [index: string]: userData
@@ -48,6 +49,7 @@ interface optionsInfo {
   lottery: configInfoData
   pklottery: configInfoData
   beatStorm: configInfoData
+  anchor: configInfoData
 }
 interface configInfoData {
   description: string
@@ -125,6 +127,28 @@ interface beatStormMessage {
 /**
  * 消息格式
  *
+ * @interface beatStormMessage
+ */
+interface anchorMessage {
+  cmd: 'anchor'
+  roomID: number
+  id: number
+  award_num: number
+  award_name: string
+  danmu: string
+  gift_id: number
+  gift_name: string
+  gift_num: number
+  gift_price: number
+  require_type: number
+  require_value: number
+  type: string
+  title: string
+  time: number
+}
+/**
+ * 消息格式
+ *
  * @interface systemMessage
  */
 interface systemMessage {
@@ -132,7 +156,7 @@ interface systemMessage {
   msg: string
   ts?: string
 }
-type message = systemMessage | raffleMessage | lotteryMessage | beatStormMessage
+type message = systemMessage | raffleMessage | lotteryMessage | beatStormMessage | anchorMessage
 /*******************
  ***** wsserver ****
  *******************/

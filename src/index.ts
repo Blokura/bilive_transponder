@@ -61,6 +61,7 @@ class BiLive {
       .on('lottery', lotteryMessage => this._WSServer.Lottery(lotteryMessage))
       .on('pklottery', lotteryMessage => this._WSServer.PKLottery(lotteryMessage))
       .on('beatStorm', beatStormMessage => this._WSServer.BeatStorm(beatStormMessage))
+      .on('anchor', anchorMessage => this._WSServer.Anchor(anchorMessage))
       .Start()
   }
 }

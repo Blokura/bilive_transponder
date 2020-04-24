@@ -47,7 +47,23 @@ class Listener extends EventEmitter {
    */
   private _beatStormID: Set<number> = new Set()
   private _dailyBeatStormID: Set<number> = new Set()
+  /**
+   * PK大乱斗ID
+   *
+   * @private
+   * @type {Set<number>}
+   * @memberof Listener
+   */
   private _pklotteryID: Set<number> = new Set()
+  /**
+   * PK大乱斗ID
+   *
+   * @private
+   * @type {Set<number>}
+   * @memberof Listener
+   */
+  private _anchorID: Set<number> = new Set()
+  private _dailyAnchorID: Set<number> = new Set()
   /**
    * 开始监听时间
    *
@@ -102,6 +118,7 @@ class Listener extends EventEmitter {
           .on('lottery', (lotteryMessage: lotteryMessage) => this._RaffleHandler(lotteryMessage))
           .on('pklottery', (lotteryMessage: lotteryMessage) => this._RaffleHandler(lotteryMessage))
           .on('beatStorm', (beatStormMessage: beatStormMessage) => this._RaffleHandler(beatStormMessage))
+          .on('anchor', (anchorMessage: anchorMessage) => this._RaffleHandler(anchorMessage))
           .on('sysmsg', (systemMessage: systemMessage) => tools.Log(`来自${nickname} 的消息：${systemMessage.msg}`))
           .Connect()
         this._WSClients.set(uid, client)
@@ -119,6 +136,7 @@ class Listener extends EventEmitter {
           .on('lottery', (lotteryMessage: lotteryMessage) => this._RaffleHandler(lotteryMessage))
           .on('pklottery', (lotteryMessage: lotteryMessage) => this._RaffleHandler(lotteryMessage))
           .on('beatStorm', (beatStormMessage: beatStormMessage) => this._RaffleHandler(beatStormMessage))
+          .on('anchor', (anchorMessage: anchorMessage) => this._RaffleHandler(anchorMessage))
           .on('sysmsg', (systemMessage: systemMessage) => tools.Log(`来自${nickname}的消息：${systemMessage.msg}`))
           .Connect()
         this._WSClients.set(uid, client)
@@ -196,6 +214,7 @@ class Listener extends EventEmitter {
     logMsg += `共监听到raffle抽奖数：${this._raffleID.size}(${this._dailyRaffleID.size})\n`
     logMsg += `共监听到lottery抽奖数：${this._lotteryID.size}(${this._dailyLotteryID.size})\n`
     logMsg += `共监听到beatStorm抽奖数：${this._beatStormID.size}(${this._dailyBeatStormID.size})\n`
+    logMsg += `共监听到beatStorm抽奖数：${this._anchorID.size}(${this._dailyAnchorID.size})\n`
     logMsg += `raffle漏监听：${raffleMiss}(${raffleMissRate.toFixed(1)}%)\n`
     logMsg += `lottery漏监听：${lotteryMiss}(${lotteryMissRate.toFixed(1)}%)\n`
     logMsg += `今日raffle漏监听：${dailyRaffleMiss}(${dailyRaffleMissRate.toFixed(1)}%)\n`
@@ -207,6 +226,7 @@ class Listener extends EventEmitter {
     pushMsg += `- 共监听到raffle抽奖数：${this._raffleID.size}(${this._dailyRaffleID.size})\n`
     pushMsg += `- 共监听到lottery抽奖数：${this._lotteryID.size}(${this._dailyLotteryID.size})\n`
     pushMsg += `- 共监听到beatStorm抽奖数：${this._beatStormID.size}(${this._dailyBeatStormID.size})\n`
+    pushMsg += `- 共监听到anchor抽奖数：${this._anchorID.size}(${this._dailyAnchorID.size})\n`
     pushMsg += `- raffle漏监听：${raffleMiss}(${raffleMissRate.toFixed(1)}%)\n`
     pushMsg += `- lottery漏监听：${lotteryMiss}(${lotteryMissRate.toFixed(1)}%)\n`
     pushMsg += `- 今日raffle漏监听：${dailyRaffleMiss}(${dailyRaffleMissRate.toFixed(1)}%)\n`
@@ -220,7 +240,7 @@ class Listener extends EventEmitter {
    * @param {raffleMessage | lotteryMessage | beatStormMessage} raffleMessage
    * @memberof Listener
    */
-  private _RaffleHandler(raffleMessage: raffleMessage | lotteryMessage | beatStormMessage) {
+  private _RaffleHandler(raffleMessage: raffleMessage | lotteryMessage | beatStormMessage | anchorMessage) {
     const { cmd, id, roomID, title } = raffleMessage
     switch (cmd) {
       case 'raffle':
@@ -238,6 +258,10 @@ class Listener extends EventEmitter {
       case 'pklottery':
         if (this._pklotteryID.has(id)) return
         this._pklotteryID.add(id)
+        break
+      case 'anchor':
+        if (this._anchorID.has(id)) return
+        this._anchorID.add(id)
         break
       default: return
     }
