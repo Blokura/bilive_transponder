@@ -9,6 +9,6 @@
   2. 命令行 `npm run build`
   3. 命令行 `npm start`
 
-[点此进行设置](http://vector000.coding.me/bilive_setting/#path=ws://localhost:33333&protocol=admin)
+[点此进行设置](http://r07908.coding-pages.com/#path=ws://localhost:33333&protocol=admin)
 
 此为转发器,更多功能请使用[客户端](https://github.com/Vector000/bilive_client)和[服务端](https://github.com/Vector000/bilive_server)
